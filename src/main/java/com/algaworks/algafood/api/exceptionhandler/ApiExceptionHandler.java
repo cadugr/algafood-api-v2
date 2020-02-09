@@ -26,7 +26,19 @@ import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	
+	@ExceptionHandler(Exception.class)
+	public ResponseEntity<Object> handleUncaught(Exception ex, WebRequest request) {
+		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+		ProblemType problemType = ProblemType.ERRO_DE_SISTEMA;
+		String detail =  "Ocorreu um erro inesperado no sistema. Tente novamente e se o "
+				+ "problema persistir, entre em contato com o administrador do sistema.";
 		
+		ex.printStackTrace();
+		Problem problem = createProblemBuilder(httpStatus, problemType, detail).build();
+			
+		return handleExceptionInternal(ex, problem, new HttpHeaders(), httpStatus, request);
+	}
+	
 	@Override
 	protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
 		HttpStatus status, WebRequest request) {
