@@ -30,7 +30,7 @@ public class CadastroCozinhaIT {
 	}
 	
 	@Test
-	public void deveRetornar200_QuandoConsultarCozinhas() {
+	public void deveRetornarStatus200_QuandoConsultarCozinhas() {
 		given()
 			.accept(ContentType.JSON)
 		.when()
@@ -40,7 +40,7 @@ public class CadastroCozinhaIT {
 	}
 	
 	@Test
-	public void deveRetornar4Cozinhas_QuandoConsultarCozinhas() {
+	public void deveConter4Cozinhas_QuandoConsultarCozinhas() {
 		given()
 			.accept(ContentType.JSON)
 		.when()
@@ -48,6 +48,19 @@ public class CadastroCozinhaIT {
 		.then()
 			.body("", hasSize(4))
 			.body("nome", hasItems("Tailandesa", "Brasileira"));
+	}
+	
+	@Test
+	public void deveRetornarStatus201_QuandoCadastrarCozinha( ) {
+		given()
+			.body("{ \"nome\" : \"Chinesa\"}")
+			.contentType(ContentType.JSON)
+			.accept(ContentType.JSON)
+		.when()
+			.post()
+		.then()
+			.statusCode(HttpStatus.CREATED.value());
+		
 	}
 
 }
