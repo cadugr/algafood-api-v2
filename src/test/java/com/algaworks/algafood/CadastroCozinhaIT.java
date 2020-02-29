@@ -5,6 +5,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.util.DatabaseCleaner;
+import com.algaworks.algafood.util.ResourceUtils;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -35,6 +39,12 @@ public class CadastroCozinhaIT {
 	
 	@Autowired
 	private CozinhaRepository cozinhaRepository;
+	
+	private Cozinha cozinhaAmericana;
+	
+	private static Integer COZINHA_ID_INEXISTENTE = 100;
+	
+	private Integer totalCozinhas;
 	
 	@Before
 	public void setUp() {
@@ -63,14 +73,14 @@ public class CadastroCozinhaIT {
 		.when()
 			.get()
 		.then()
-			.body("", hasSize(2))
+			.body("", hasSize(totalCozinhas))
 			.body("nome", hasItems("Tailandesa", "Americana"));
 	}
 	
 	@Test
 	public void deveRetornarStatus201_QuandoCadastrarCozinha( ) {
 		given()
-			.body("{ \"nome\" : \"Chinesa\"}")
+			.body(ResourceUtils.getContentFromResource("/json/correto/cozinha-chinesa.json"))
 			.contentType(ContentType.JSON)
 			.accept(ContentType.JSON)
 		.when()
@@ -83,19 +93,19 @@ public class CadastroCozinhaIT {
 	@Test
 	public void deveRetornarRespostaEStatusCorretos_QuandoConsultarCozinhaExistente () {
 		given()
-			.pathParam("cozinhaId", 2)
+			.pathParam("cozinhaId", cozinhaAmericana.getId())
 			.accept(ContentType.JSON)
 		.when()
 			.get("/{cozinhaId}")
 		.then()
 			.statusCode(HttpStatus.OK.value())
-			.body("nome", equalTo("Americana"));
+			.body("nome", equalTo(cozinhaAmericana.getNome()));
 	}
 	
 	@Test
 	public void deveRetornarStatus404_QuandoConsultarCozinhaInexistente () {
 		given()
-			.pathParam("cozinhaId", 100)
+			.pathParam("cozinhaId", COZINHA_ID_INEXISTENTE)
 			.accept(ContentType.JSON)
 		.when()
 			.get("/{cozinhaId}")
@@ -104,13 +114,19 @@ public class CadastroCozinhaIT {
 	}
 	
 	private void prepararDados() {
+		List<Cozinha> cozinhas = new ArrayList<Cozinha>();
+		
 		Cozinha cozinha1 = new Cozinha();
 		cozinha1.setNome("Tailandesa");
 		cozinhaRepository.save(cozinha1);
+		cozinhas.add(cozinha1);
 		
-		Cozinha cozinha2 = new Cozinha();
-		cozinha2.setNome("Americana");
-		cozinhaRepository.save(cozinha2);
+		cozinhaAmericana = new Cozinha();
+		cozinhaAmericana.setNome("Americana");
+		cozinhaRepository.save(cozinhaAmericana);
+		cozinhas.add(cozinhaAmericana);
+		
+		totalCozinhas = cozinhas.size();
 	}
 
 }
