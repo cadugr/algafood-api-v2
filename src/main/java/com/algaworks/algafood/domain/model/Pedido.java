@@ -1,7 +1,7 @@
 package com.algaworks.algafood.domain.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,13 +43,13 @@ public class Pedido {
 	
 	@CreationTimestamp
 	@Column(name = "data_criacao")
-	private LocalDateTime dataCriacao;
+	private OffsetDateTime dataCriacao;
 	
-	private LocalDateTime dataConfirmacao;
+	private OffsetDateTime dataConfirmacao;
 	
-	private LocalDateTime dataCancelamento;
+	private OffsetDateTime dataCancelamento;
 	
-	private LocalDateTime dataEntrega;
+	private OffsetDateTime dataEntrega;
 	
 	@ManyToOne
 	@JoinColumn(name = "usuario_cliente_id", nullable = false)
