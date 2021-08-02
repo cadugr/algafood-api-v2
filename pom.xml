@@ -70,6 +70,12 @@
 		  <artifactId>modelmapper</artifactId>
 		  <version>${modelmapper.version}</version>
 		</dependency>
+		<!-- Incluída apenas para remover o erro do groovy -->
+		<dependency>
+        	<groupId>org.codehaus.groovy</groupId>
+        	<artifactId>groovy</artifactId>
+        	<version>3.0.3</version><!--$NO-MVN-MAN-VER$-->
+    	</dependency>
 	</dependencies>
 
 	<build>
