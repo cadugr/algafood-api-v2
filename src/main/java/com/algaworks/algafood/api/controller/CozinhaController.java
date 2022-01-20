@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algafood.api.assembler.CozinhaModelAssembler;
 import com.algaworks.algafood.api.model.CozinhaModel;
 import com.algaworks.algafood.core.security.CheckSecurity;
-import com.algaworks.algafood.core.security.PodeConsultarCozinhas;
-import com.algaworks.algafood.core.security.PodeEditarCozinhas;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import com.algaworks.algafood.domain.service.CadastroCozinhaService;
@@ -46,6 +44,7 @@ public class CozinhaController {
 	@CheckSecurity.Cozinhas.PodeConsultar
 	@GetMapping
 	public Page<CozinhaModel> listar(@PageableDefault(size = 10) Pageable pageable) {
+		//System.out.println(SecurityContextHolder.getContext().getAuthentication().getAuthorities());
 		Page<Cozinha> cozinhasPage = cozinhaRepository.findAll(pageable);
 		List<CozinhaModel> cozinhasModel = cozinhaModelAssembler.toCollectionModel(cozinhasPage.getContent());
 		
